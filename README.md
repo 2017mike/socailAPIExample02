@@ -1,1 +1,1 @@
-# socailAPIExample02
+# Social Media API
