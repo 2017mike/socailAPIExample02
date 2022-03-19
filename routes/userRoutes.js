@@ -19,6 +19,46 @@ router.post('/users/login', (req, res) => {
   })
 })
 
+router.get('/users', passport.authenticate('jwt'), async function (req, res)  {
+  const users = await User.find({})
+  res.json(users)
+})
+
+router.get('/users/:id', passport.authenticate('jwt'), async function(req, res) {
+  const user = await User.findById(req.params.id)
+  res.json(user)
+})
+
+router.put('/users/:id', passport.authenticate('jwt'), async function(req, res) {
+  const user = await User.findByIdAndUpdate(req.params.id, {$set: req.body})
+  res.sendStatus(200)
+})
+
+router.delete('/users/:id', passport.authenticate('jwt'), async function(req, res) {
+  const user = await User.findByIdAndDelete(req.params.id)
+  res.sendStatus(200)
+})
+
+
+// **`/api/users/:userId/friends/:friendId`**
+
+// * `POST` to add a new friend to a user's friend list
+
+// * `DELETE` to remove a friend from a user's friend list
+
+router.post('/users/:userId/friends/:friendId', passport.authenticate('jwt'), async function(req, res) {
+  const friend = await User.findByIdAndUpdate(req.params.userId, { $addToSet: {friends: req.params.friendId}})
+
+  res.sendStatus(200)
+})
+
+router.delete('/users/:userId/friends/:friendId', passport.authenticate('jwt'), async function(req, res) {
+  const friend = await User.findByIdAndUpdate(req.params.userId, { $pull: {friends: req.params.friendId}})
+
+  res.sendStatus(200)
+})
+
+
 
 
 
